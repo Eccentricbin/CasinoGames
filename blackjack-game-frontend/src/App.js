@@ -1,22 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './components/Login';
+import Registration from './components/Registration';
+import GameSelection from './components/GameSelection';
+import BlackJack from './components/BlackJack'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registration" element={<Registration /> } />
+          <Route path="/game-selection" element={<GameSelection />} />
+          <Route path="/blackjack" element={<BlackJack />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;

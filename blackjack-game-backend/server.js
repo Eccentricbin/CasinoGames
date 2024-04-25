@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 // Import User model
 const User = require('./models/user');
@@ -16,9 +17,11 @@ mongoose.connect('mongodb://127.0.0.1:27017/blackjack', { useNewUrlParser: true,
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('Error connecting to MongoDB:', err));
 
-// Define routes (assuming you will have routes for user-related operations)
-// For example:
-app.post('/api/users', async (req, res) => {
+// Enable CORS for all routes
+app.use(cors());
+
+// POST /api/users/register
+app.post('/api/users/register', async (req, res) => {
   try {
     const newUser = new User(req.body);
     const savedUser = await newUser.save();
@@ -30,15 +33,16 @@ app.post('/api/users', async (req, res) => {
 
 // POST /api/users/login
 app.post('/api/users/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { name, password } = req.body;
   try {
-    const user = await User.findOne({ username, password });
+    const user = await User.findOne({ name, password });
     if (!user) {
       return res.status(404).json({ message: 'User not found or incorrect password' });
     }
     const { username, winCount, lossCount, tieCount, balance } = user;
     res.status(200).json({ username, winCount, lossCount, tieCount, balance });
   } catch (error) {
+    console.log(error.message)
     res.status(500).json({ message: error.message });
   }
 });
