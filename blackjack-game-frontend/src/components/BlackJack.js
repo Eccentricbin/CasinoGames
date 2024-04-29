@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { DataContext } from '../contexts/DataContext';
+
 
 const Blackjack = () => {
     const [betAmount, setBetAmount] = useState(5); // Default bet amount
@@ -8,6 +10,25 @@ const Blackjack = () => {
     const [dealerCards, setDealerCards] = useState([]); // Dealer's cards
     const [gameResult, setGameResult] = useState(''); // Game result
     const [deck, setDeck] = useState([]); // Game result
+    const [balance, updateBalance] = useState(0);
+    const [username, updateUsername] = useState('');
+
+    const { userData } = useContext(DataContext);
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await axios.get(`http://localhost:5000/api/users/${userData.username}`);
+            console.log(response.data);
+            updateBalance(response.data.balance);
+            updateUsername(response.data.username);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+    
+        fetchData(); // Call fetchData function when component mounts
+      }, []);
 
     const DECK_COUNT = 6; // Number of decks to use
 
@@ -37,25 +58,62 @@ const Blackjack = () => {
         setBetAmount(newAmount);
     };
 
-    const handleEndGame = (result) => {
+    const handleEndGame = async (result) => {
         setGameResult(result);
         setGameStarted(false);
+
+        try {
+            
+            // Define the API endpoint URLs
+            let apiUrl;
+            switch (result) {
+                case 'win':
+                    console.log(balance, betAmount)
+                    apiUrl = `http://localhost:5000/api/users/win/${username}`; // Replace userId with the actual user ID
+                    // Make the PUT request to the corresponding API endpoint
+                    const response1 = await axios.put(apiUrl, {
+                        winCount: 1, 
+                        balance: balance + betAmount
+                    });
+                    break;
+                case 'lose':
+                    console.log(balance, betAmount)
+                    apiUrl = `http://localhost:5000/api/users/loss/${username}`; // Replace userId with the actual user ID
+                    const response2 = await axios.put(apiUrl, {
+                        lossCount: 1, 
+                        balance: balance - betAmount
+                    });
+                    break;
+                case 'draw':
+                    apiUrl = `http://localhost:5000/api/users/tie/${username}`; // Replace userId with the actual user ID
+                    const response3 = await axios.put(apiUrl, {
+                        tieCount: 1, 
+                        balance: balance
+                    });
+                    break;
+                default:
+                    console.error('Invalid game result');
+                    return;
+            }
+        } catch (error) {
+            console.error('API call failed:', error.response.data.message);
+        }
     }
 
     const handlePlayerBlackJack = async () => {
         console.log("here");
-        if (await calculateTotal(dealerCards) == 10 || (await calculateTotal(dealerCards) == 11 && dealerCards.length == 1)) {
+        if (calculateTotal(dealerCards) == 10 || (calculateTotal(dealerCards) == 11 && dealerCards.length == 1)) {
             dealerCards.push(deck.pop());
             setPlayerCards(dealerCards => [...dealerCards]);
-            if (await calculateTotal(dealerCards) == 21) {
-                handleEndGame('draw')
+            if (calculateTotal(dealerCards) == 21) {
+                await handleEndGame('draw')
             }
             else {
-                handleEndGame('win');
+                await handleEndGame('win');
             }
         }
         else {
-            handleEndGame('win');
+            await handleEndGame('win');
         }
     }
 
@@ -67,22 +125,22 @@ const Blackjack = () => {
             // Handle game initialization response from backend
             generateInitialCards();
             setGameStarted(true);
-            setPlayerCards(playerCards => [...playerCards, {'suit': 'Hearts', 'rank' : 'A'}]);
+            setPlayerCards(playerCards => [...playerCards, deck.pop()]);
             setDealerCards(dealerCards => [...dealerCards, deck.pop()]);
-            setPlayerCards(playerCards => [...playerCards, {'suit': 'Hearts', 'rank' : 'K'}]);
-            setPlayerCards(playerCards => [...playerCards]);
-            console.log(await calculateTotal(playerCards))
+            setPlayerCards(playerCards => [...playerCards, deck.pop()]);
             //Handle black jack logic
-            if (await calculateTotal(playerCards) == 21)
+            var total = calculateTotal(playerCards);
+            if (total == 21)
                 await handlePlayerBlackJack();
         } catch (error) {
             console.error('Error starting game:', error);
         }
     };
 
-    const calculateTotal = async (cards) => {
+    const calculateTotal = (cards) => {
         let total = 0;
         let aceCount = 0; // Count the number of Aces
+        console.log(playerCards)
         cards.forEach((card) => {
             if (card.rank === 'K' || card.rank === 'Q' || card.rank === 'J') {
                 total += 10;
@@ -107,10 +165,10 @@ const Blackjack = () => {
         try {
             playerCards.push(deck.pop())
             setPlayerCards(playerCards => [...playerCards]);
-            total = await calculateTotal(playerCards);
+            total = calculateTotal(playerCards);
             if (total > 21) {
                 // Player busts, end game
-                handleEndGame('lose');
+                await handleEndGame('lose');
             }
             else if (total == 21) {
                 await handleStand();
@@ -122,22 +180,22 @@ const Blackjack = () => {
 
     const handleStand = async () => {
         try {
-            if (await calculateTotal(playerCards) < 12) {
+            if (calculateTotal(playerCards) < 12) {
                 alert("You can't stand below 12.");
                 return;
             }
 
-            while (await calculateTotal(dealerCards) < 17) {
+            while (calculateTotal(dealerCards) < 17) {
                 dealerCards.push(deck.pop())
             }
-            if (await calculateTotal(dealerCards) > 21 || await calculateTotal(dealerCards) < await calculateTotal(playerCards)) {
-                handleEndGame('win');
+            if (calculateTotal(dealerCards) > 21 || calculateTotal(dealerCards) < calculateTotal(playerCards)) {
+                await handleEndGame('win');
             }
-            else if (await calculateTotal(dealerCards) > await calculateTotal(playerCards)) {
-                handleEndGame('lose');
+            else if (calculateTotal(dealerCards) > calculateTotal(playerCards)) {
+                await handleEndGame('lose');
             }
             else {
-                handleEndGame('draw');
+                await handleEndGame('draw');
             }
         } catch (error) {
             console.error('Error standing:', error);

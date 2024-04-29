@@ -47,12 +47,31 @@ app.post('/api/users/login', async (req, res) => {
   }
 });
 
-// PUT /api/users/win/:id
-app.put('/api/users/win/:id', async (req, res) => {
-  const { id } = req.params;
+// GET /api/users/:username
+app.get('/api/users/:username', async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await User.findOne({ username }); // Find user by username
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+// PUT /api/users/win/:username
+app.put('/api/users/win/:username', async (req, res) => {
+  const { username } = req.params;
   const { winCount, balance } = req.body;
   try {
-    const updatedUser = await User.findByIdAndUpdate(id, { $inc: { winCount }, $set: { balance } }, { new: true });
+    const updatedUser = await User.findOneAndUpdate(
+      { username: username }, // Find user by username
+      { $inc: { winCount }, $set: { balance } }, // Update fields
+      { new: true } // Return updated document
+    );
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -62,12 +81,17 @@ app.put('/api/users/win/:id', async (req, res) => {
   }
 });
 
-// PUT /api/users/loss/:id
-app.put('/api/users/loss/:id', async (req, res) => {
-  const { id } = req.params;
+
+// PUT /api/users/loss/:username
+app.put('/api/users/loss/:username', async (req, res) => {
+  const { username } = req.params;
   const { lossCount, balance } = req.body;
   try {
-    const updatedUser = await User.findByIdAndUpdate(id, { $inc: { lossCount }, $set: { balance } }, { new: true });
+    const updatedUser = await User.findOneAndUpdate(
+      { username: username }, // Find user by username
+      { $inc: { lossCount }, $set: { balance } }, // Update fields
+      { new: true } // Return updated document
+    );
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -77,13 +101,16 @@ app.put('/api/users/loss/:id', async (req, res) => {
   }
 });
 
-
-// PUT /api/users/tie/:id
-app.put('/api/users/tie/:id', async (req, res) => {
-  const { id } = req.params;
+// PUT /api/users/tie/:username
+app.put('/api/users/tie/:username', async (req, res) => {
+  const { username } = req.params;
   const { tieCount } = req.body;
   try {
-    const updatedUser = await User.findByIdAndUpdate(id, { $inc: { tieCount } }, { new: true });
+    const updatedUser = await User.findOneAndUpdate(
+      { username: username }, // Find user by username
+      { $inc: { tieCount } }, // Update fields
+      { new: true } // Return updated document
+    );
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
