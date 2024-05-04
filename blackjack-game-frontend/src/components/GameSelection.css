@@ -1,13 +1,4 @@
-.registration-page {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    background-image: url('../images/gambling-4178466_1920.jpg');
-    background-size: cover;
-}
-
-.Registration-container {
+.game-selection-container {
     width: 100%;
     max-width: 25rem;
     margin: auto;
@@ -20,20 +11,13 @@
     box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.1);
 }
 
-.Registration-container h2 {
+.game-selection-container h2 {
     text-align: center;
     margin-bottom: 1.875rem;
     color: #00ddff;
 }
 
-.input {
-    width: 22rem;
-    padding: 0.95rem;
-    margin-bottom: 0.95rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
+/*  */
 .register, .login {
     width: 11rem;
     padding: 0.75rem;
@@ -45,12 +29,6 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
-
-.button-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
 }
 
 .register:hover, .login:hover {

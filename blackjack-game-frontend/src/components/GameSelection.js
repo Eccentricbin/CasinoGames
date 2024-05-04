@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './GameSelection.css';
 
 const GameSelection = () => {
   return (
-    <div>
-      <h2>Choose a Game</h2>
-      <div>
+    <div className= 'game-selection-page'>
+      <div className='game-selection-container'>
+        <h2>Choose a Game</h2>
         <Link to="/blackjack">
           <button>Blackjack</button>
         </Link>

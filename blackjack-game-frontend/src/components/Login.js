@@ -9,11 +9,11 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const { setUserData } = useContext(DataContext);
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-        console.log(username, password);
+      console.log(username, password);
       const response = await axios.post('http://localhost:5000/api/users/login', { username, password });
       console.log(response.data); // Print user details after successful login
       setUserData(response.data);
@@ -24,18 +24,20 @@ const Login = () => {
     }
   };
 
-  const handleSignup =  () => {
-      navigate('/registration');
+  const handleSignup = () => {
+    navigate('/registration');
   };
 
 
   return (
-    <div class="login-container">
-      <h2>USER LOGIN</h2>
-      <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="login-input"/>
-      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="login-input" />
-      <button onClick={handleLogin} className="login-button">Login</button>
-      <button onClick={handleSignup} className="Signup-button">Sign up</button>
+    <div className="login-page">
+      <div className="login-container">
+        <h2>USER LOGIN</h2>
+        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="login-input" />
+        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="login-input" />
+        <button onClick={handleLogin} className="login-button">Login</button>
+        <button onClick={handleSignup} className="Signup-button">Sign up</button>
+      </div>
     </div>
   );
 };
