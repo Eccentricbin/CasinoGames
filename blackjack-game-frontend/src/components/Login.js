@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { DataContext } from '../contexts/DataContext';
+import './Login.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -23,12 +24,18 @@ const Login = () => {
     }
   };
 
+  const handleSignup =  () => {
+      navigate('/registration');
+  };
+
+
   return (
-    <div>
-      <h2>User Login</h2>
-      <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login</button>
+    <div class="login-container">
+      <h2>USER LOGIN</h2>
+      <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="login-input"/>
+      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="login-input" />
+      <button onClick={handleLogin} className="login-button">Login</button>
+      <button onClick={handleSignup} className="Signup-button">Sign up</button>
     </div>
   );
 };
