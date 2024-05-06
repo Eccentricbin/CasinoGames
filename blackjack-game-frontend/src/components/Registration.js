@@ -11,8 +11,8 @@ const Registration = () => {
   const handleRegister = async () => {
     try {
       const response = await axios.post('http://localhost:5000/api/users/register', { username, password });
-      console.log(response.data); // Print newly registered user details
-      // Optionally, redirect to login screen after successful registration
+      alert("User " + response.data.username + " registered.")
+      navigate('/login');
     } catch (error) {
       console.error('Registration failed:', error.response.data.message);
     }

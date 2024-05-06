@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { DataContext } from '../contexts/DataContext';
-
+import './BlackJack.css'
 
 const Blackjack = () => {
     const [betAmount, setBetAmount] = useState(5); // Default bet amount
@@ -17,24 +17,23 @@ const Blackjack = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-          try {
-            const response = await axios.get(`http://localhost:5000/api/users/${userData.username}`);
-            console.log(response.data);
-            updateBalance(response.data.balance);
-            updateUsername(response.data.username);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
+            try {
+                const response = await axios.get(`http://localhost:5000/api/users/${userData.username}`);
+                updateBalance(response.data.balance);
+                updateUsername(response.data.username);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
-    
+
         fetchData(); // Call fetchData function when component mounts
-      }, []);
+    }, []);
 
     const DECK_COUNT = 6; // Number of decks to use
 
     const generateInitialCards = () => {
-        const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
-        const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+        const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
+        const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace'];
 
         // Generate cards for each deck
         for (let i = 0; i < DECK_COUNT; i++) {
@@ -52,6 +51,12 @@ const Blackjack = () => {
         }
     };
 
+    const getCardImageUrl = (card) => {
+        const { rank, suit } = card;
+        return `images/${rank}_of_${suit}.png`;
+    };
+
+
     const handleBetAmountChange = (e) => {
         // Update the bet amount based on user input
         const newAmount = parseInt(e.target.value);
@@ -63,31 +68,31 @@ const Blackjack = () => {
         setGameStarted(false);
 
         try {
-            
+
             // Define the API endpoint URLs
             let apiUrl;
             switch (result) {
                 case 'win':
-                    console.log(balance, betAmount)
                     apiUrl = `http://localhost:5000/api/users/win/${username}`; // Replace userId with the actual user ID
                     // Make the PUT request to the corresponding API endpoint
                     const response1 = await axios.put(apiUrl, {
-                        winCount: 1, 
+                        winCount: 1,
                         balance: balance + betAmount
                     });
+                    updateBalance(balance + betAmount)
                     break;
                 case 'lose':
-                    console.log(balance, betAmount)
                     apiUrl = `http://localhost:5000/api/users/loss/${username}`; // Replace userId with the actual user ID
                     const response2 = await axios.put(apiUrl, {
-                        lossCount: 1, 
+                        lossCount: 1,
                         balance: balance - betAmount
                     });
+                    updateBalance(balance - betAmount)
                     break;
                 case 'draw':
                     apiUrl = `http://localhost:5000/api/users/tie/${username}`; // Replace userId with the actual user ID
                     const response3 = await axios.put(apiUrl, {
-                        tieCount: 1, 
+                        tieCount: 1,
                         balance: balance
                     });
                     break;
@@ -100,51 +105,57 @@ const Blackjack = () => {
         }
     }
 
-    const handlePlayerBlackJack = async () => {
-        console.log("here");
-        if (calculateTotal(dealerCards) == 10 || (calculateTotal(dealerCards) == 11 && dealerCards.length == 1)) {
-            dealerCards.push(deck.pop());
-            setPlayerCards(dealerCards => [...dealerCards]);
-            if (calculateTotal(dealerCards) == 21) {
-                await handleEndGame('draw')
-            }
-            else {
-                await handleEndGame('win');
-            }
-        }
-        else {
-            await handleEndGame('win');
-        }
-    }
-
     const handleStartGame = async () => {
         try {
-            setGameResult('');
-            setPlayerCards([]);
-            setDealerCards([]);
-            // Handle game initialization response from backend
-            generateInitialCards();
-            setGameStarted(true);
-            setPlayerCards(playerCards => [...playerCards, deck.pop()]);
-            setDealerCards(dealerCards => [...dealerCards, deck.pop()]);
-            setPlayerCards(playerCards => [...playerCards, deck.pop()]);
-            //Handle black jack logic
-            var total = calculateTotal(playerCards);
-            if (total == 21)
-                await handlePlayerBlackJack();
+            if (betAmount % 5 === 0 && betAmount > 0 && betAmount <= 1000) {
+                setGameResult('');
+                setPlayerCards([]);
+                setDealerCards([]);
+                // Handle game initialization response from backend
+                generateInitialCards();
+                setGameStarted(true);
+
+                // Deal two cards to player and one to dealer
+                setPlayerCards(playerCards => [...playerCards, deck.pop(), deck.pop()]);
+                //setPlayerCards([{ suit: 'hearts', rank: 'ace' }, { suit: 'hearts', rank: 'king' }]);
+                setDealerCards(dealerCards => [...dealerCards, deck.pop()]);
+            }
+            else {
+                alert("Bet amount should be in units of 5 and maximum is 1000.")
+            }
         } catch (error) {
             console.error('Error starting game:', error);
         }
     };
 
+    // Handle player's blackjack
+    useEffect(() => {
+        if (calculateTotal(playerCards) == 21 && playerCards.length == 2) {
+            if (calculateTotal(dealerCards) == 10 || (calculateTotal(dealerCards) == 11 && dealerCards.length == 1)) {
+                setDealerCards(dealerCards => [...dealerCards, deck.pop()]);
+            }
+            else {
+                handleEndGame('win');
+            }
+            if (dealerCards.length == 2) {
+                if (calculateTotal(dealerCards) == 21) {
+                    handleEndGame('draw');
+                }
+                if (calculateTotal(dealerCards) != 21) {
+                    handleEndGame('win');
+                }
+            }
+        }
+    }, [playerCards, dealerCards]);
+
+
     const calculateTotal = (cards) => {
         let total = 0;
         let aceCount = 0; // Count the number of Aces
-        console.log(playerCards)
         cards.forEach((card) => {
-            if (card.rank === 'K' || card.rank === 'Q' || card.rank === 'J') {
+            if (card.rank === 'king' || card.rank === 'queen' || card.rank === 'jack') {
                 total += 10;
-            } else if (card.rank === 'A') {
+            } else if (card.rank === 'ace') {
                 aceCount++; // Increment Ace count
                 total += 11; // Assume Ace as 11 initially
             } else {
@@ -203,51 +214,53 @@ const Blackjack = () => {
     };
 
     return (
-        <div className="blackjack-game-container">
-            <h2>Blackjack Game</h2>
-            <div>
-                <h3>Bet Selection</h3>
-                <input
-                    type="number"
-                    value={betAmount}
-                    onChange={handleBetAmountChange}
-                    min={5}
-                    max={100}
-                    step={5}
-                />
-                <button onClick={handleStartGame} disabled={gameStarted}>Start Game</button>
-            </div>
-            <div>
-                <h3>Dealer's Hand</h3>
-                <div className="cards-container">
-                    {dealerCards.map((card, index) => (
-                        <div key={index} className="card">
-                            {card.rank} of {card.suit}
-                        </div>
-                    ))}
-                </div>
-                <h3>Player's Hand</h3>
-                <div className="cards-container">
-                    {playerCards.map((card, index) => (
-                        <div key={index} className="card">
-                            {card.rank} of {card.suit}
-                        </div>
-                    ))}
+        <div className='blackjack-body'>
+            <div className="blackjack-game-container">
+                <h2>Blackjack Game</h2>
+                <div>
+                    <h3>Bet Selection</h3>
+                    <h3>Total Balance: {balance}</h3>
+                    <input
+                        type="number"
+                        value={betAmount}
+                        onChange={handleBetAmountChange}
+                        min={5}
+                        max={1000}
+                        step={5}
+                    />
+                    <button onClick={handleStartGame} disabled={gameStarted} className='start'>Start Game</button>
                 </div>
                 <div>
-                    <button onClick={handleHit} disabled={!gameStarted}>
-                        Hit
-                    </button>
-                    <button onClick={handleStand} disabled={!gameStarted}>
-                        Stand
-                    </button>
-                </div>
-                {gameResult && (
+                    <div className="cards-container">
+                        <div>
+                            <h3>Player's Hand - {calculateTotal(playerCards)}</h3>
+                            <div className="cards-container-ph">
+                                {playerCards.map((card, index) => (
+                                    <div key={index} className="card" style={{ backgroundImage: `url(${getCardImageUrl(card)})` }} />
+                                ))}
+                            </div>
+                        </div>
+                        <div>
+                            <h3>Dealer's Hand - {calculateTotal(dealerCards)}</h3>
+                            <div className="cards-container-dh">
+                                {dealerCards.map((card, index) => (
+                                    <div key={index} className="card" style={{ backgroundImage: `url(${getCardImageUrl(card)})` }} />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button onClick={handleHit} disabled={!gameStarted} className='hit'>
+                            Hit
+                        </button>
+                        <button onClick={handleStand} disabled={!gameStarted} className='stand'>
+                            Stand
+                        </button>
+                    </div>
                     <div>
                         <h3>Game Result: {gameResult}</h3>
-                        {/* Display other game result details */}
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );

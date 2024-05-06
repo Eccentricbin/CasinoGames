@@ -8,10 +8,10 @@ const GameSelection = () => {
       <div className='game-selection-container'>
         <h2>Choose a Game</h2>
         <Link to="/blackjack">
-          <button>Blackjack</button>
+          <button class = "blackjack">Blackjack</button>
         </Link>
         <Link>
-          <button>Baccarat</button>
+          <button class = "baccarat">Baccarat</button>
         </Link>
       </div>
     </div>
