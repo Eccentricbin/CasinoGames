@@ -10,7 +10,7 @@ const GameSelection = () => {
         <Link to="/blackjack">
           <button class = "blackjack">Blackjack</button>
         </Link>
-        <Link>
+        <Link to="/baccarat">
           <button class = "baccarat">Baccarat</button>
         </Link>
       </div>
