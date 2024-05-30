@@ -28,7 +28,8 @@
 
 /*  */
 .blackjack,
-.baccarat {
+.baccarat,
+.poker {
     width: 11rem;
     padding: 0.75rem;
     margin-top: 2rem;
@@ -42,7 +43,8 @@
 }
 
 .blackjack:hover,
-.baccarat:hover {
+.baccarat:hover,
+.poker:hover {
     background-color: #00b34e;
     transform: scale(1.1);
 }

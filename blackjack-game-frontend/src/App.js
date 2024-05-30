@@ -5,6 +5,7 @@ import Registration from './components/Registration';
 import GameSelection from './components/GameSelection';
 import BlackJack from './components/BlackJack'
 import Baccarat from './components/Baccarat';
+import ThreeCardPoker from './components/ThreeCardPoker';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
           <Route path="/game-selection" element={<GameSelection />} />
           <Route path="/blackjack" element={<BlackJack />} />
           <Route path="/baccarat" element={<Baccarat />} />
+          <Route path="/ThreeCardPoker" element={<ThreeCardPoker />} />
         </Routes>
       </div>
     </Router>

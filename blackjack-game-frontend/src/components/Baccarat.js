@@ -75,7 +75,7 @@ const Baccarat = () => {
         try {
             // Define the API endpoint URLs
             let apiUrl;
-            if (result === "banker" || result === "player") {
+            if (result == betChoice && result != "tie") {
                 apiUrl = `http://localhost:5000/api/users/win/${username}`;
                 const response = await axios.put(apiUrl, {
                     winCount: 1,
@@ -83,7 +83,7 @@ const Baccarat = () => {
                 });
                 updateBalance(balance + betAmount);
             }
-            if (result === "tie") {
+            else if (result == betChoice && result == "tie") {
                 apiUrl = `http://localhost:5000/api/users/win/${username}`;
                 const response = await axios.put(apiUrl, {
                     winCount: 1,
@@ -150,8 +150,7 @@ const Baccarat = () => {
     const evaluateGame = async () => {
         let playerTotal = calculateTotal(playerCards);
         let bankerTotal = calculateTotal(bankerCards);
-        debugger;
-
+        
         if ((playerTotal >= 8 || bankerTotal >= 8) || (playerTotal >= 6 && bankerTotal >= 6)) {
             if (playerTotal > bankerTotal) {
                 await handleEndGame('player');

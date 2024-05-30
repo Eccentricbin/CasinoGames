@@ -13,6 +13,9 @@ const GameSelection = () => {
         <Link to="/baccarat">
           <button class = "baccarat">Baccarat</button>
         </Link>
+        <Link to="/ThreeCardPoker">
+          <button class = "poker">3-Card Poker</button>
+        </Link>
       </div>
     </div>
   );
