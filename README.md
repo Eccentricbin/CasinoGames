@@ -55,10 +55,10 @@ Clone the repository.
 
  - Navigate to the backend directory: cd blackjack-game-backend
  - Install the dependencies: npm install
-  -Start the backend server: npm start
+  - Start the backend server: npm start
  - The backend server will run on http://localhost:5000/
 
-**Frontend Setup - **
+**Frontend Setup -**
 
 -  Navigate to the frontend directory: cd blackjack-game-frontend
 -  Install the dependencies: npm install
