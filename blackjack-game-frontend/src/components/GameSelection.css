@@ -8,14 +8,16 @@
 }
 
 .game-selection-container {
-    width: 100%;
-    max-width: 25rem;
+    width: 96%;
+    max-width: 100%;
+    height: 91%;
+    max-height: 100%;
     margin: auto;
     position: absolute;
-    top: 20%;
-    left: 35%;
+    /* top: 20%;
+    left: 35%; */
     padding: 2.5rem;
-    background-color: rgba(4, 0, 0, 0.384);
+    background-color: rgba(4, 0, 0, 0);
     border-radius: 1rem;
     box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.1);
 }
@@ -26,14 +28,15 @@
     color: #00ddff;
 }
 
-/*  */
+
 .blackjack,
 .baccarat,
 .poker {
-    width: 11rem;
+    width: 100%;
+    height: 25%;
     padding: 0.75rem;
-    margin-top: 2rem;
-    margin-left: 0.7rem;
+    /* margin-top: 2rem; */
+    /* margin-left: 0.7rem; */
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -54,3 +57,11 @@
     justify-content: center;
     width: 100%;
 }
+
+.blackjack{
+    background-image: url('../images/cards.gif');
+    background-size: cover;
+    background-position: center;
+
+}
+/* --- */

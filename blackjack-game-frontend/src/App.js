@@ -6,6 +6,8 @@ import GameSelection from './components/GameSelection';
 import BlackJack from './components/BlackJack'
 import Baccarat from './components/Baccarat';
 import ThreeCardPoker from './components/ThreeCardPoker';
+import Home from './components/Home';
+import AboutMe from './components/AboutMe';
 
 const App = () => {
   return (
@@ -19,6 +21,8 @@ const App = () => {
           <Route path="/blackjack" element={<BlackJack />} />
           <Route path="/baccarat" element={<Baccarat />} />
           <Route path="/ThreeCardPoker" element={<ThreeCardPoker />} />
+          <Route path="/Home" element={<Home />} />
+          <Route path="/AboutMe" element={<AboutMe />} />
         </Routes>
       </div>
     </Router>
