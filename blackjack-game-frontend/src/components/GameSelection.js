@@ -4,17 +4,35 @@ import './GameSelection.css';
 
 const GameSelection = () => {
   return (
-    <div className= 'game-selection-page'>
+    <div className='game-selection-page'>
       <div className='game-selection-container'>
         <h2>Choose a Game</h2>
         <Link to="/blackjack">
-          <button class = "blackjack">Blackjack</button>
+          <div className="buttonBox blackjack">
+            <button>Blackjack</button>
+            <div className="border"></div>
+            <div className="border"></div>
+            <div className="border"></div>
+            <div className="border"></div>
+          </div>
         </Link>
         <Link to="/baccarat">
-          <button class = "baccarat">Baccarat</button>
+          <div className="buttonBox baccarat">
+            <button>Baccarat</button>
+            <div className="border"></div>
+            <div className="border"></div>
+            <div className="border"></div>
+            <div className="border"></div>
+          </div>
         </Link>
         <Link to="/ThreeCardPoker">
-          <button class = "poker">3-Card Poker</button>
+          <div className="buttonBox poker">
+            <button>3-Card Poker</button>
+            <div className="border"></div>
+            <div className="border"></div>
+            <div className="border"></div>
+            <div className="border"></div>
+          </div>
         </Link>
       </div>
     </div>
