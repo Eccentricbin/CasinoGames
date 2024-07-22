@@ -18,12 +18,16 @@ const Baccarat = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/users/${userData.username}`);
-                updateBalance(response.data.balance);
-                updateUsername(response.data.username);
-            } catch (error) {
-                console.error('Error fetching data:', error);
+            if (userData && userData.username) {
+                try {
+                    const response = await axios.get(`http://localhost:5000/api/users/${userData.username}`);
+                    updateBalance(response.data.balance);
+                    updateUsername(response.data.username);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            } else {
+                console.log('User data is not available.');
             }
         };
 
@@ -62,7 +66,7 @@ const Baccarat = () => {
         const newAmount = parseInt(e.target.value);
         setBetAmount(newAmount);
     };
-    
+
     const handleBetChoiceChange = (e) => {
         // Update the bet choice based on user selection
         setBetChoice(e.target.value);
@@ -150,7 +154,7 @@ const Baccarat = () => {
     const evaluateGame = async () => {
         let playerTotal = calculateTotal(playerCards);
         let bankerTotal = calculateTotal(bankerCards);
-        
+
         if ((playerTotal >= 8 || bankerTotal >= 8) || (playerTotal >= 6 && bankerTotal >= 6)) {
             if (playerTotal > bankerTotal) {
                 await handleEndGame('player');

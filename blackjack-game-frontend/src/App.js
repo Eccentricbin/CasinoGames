@@ -6,23 +6,25 @@ import GameSelection from './components/GameSelection';
 import BlackJack from './components/BlackJack'
 import Baccarat from './components/Baccarat';
 import ThreeCardPoker from './components/ThreeCardPoker';
-import Home from './components/Home';
-import AboutMe from './components/AboutMe';
+// import Home from './components/Home';
+// import AboutMe from './components/AboutMe';
+import SideMenu from './components/SideMenu';
 
 const App = () => {
   return (
     <Router>
       <div>
+        <SideMenu/>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/registration" element={<Registration /> } />
+          <Route path="/registration" element={<Registration />} />
           <Route path="/game-selection" element={<GameSelection />} />
           <Route path="/blackjack" element={<BlackJack />} />
           <Route path="/baccarat" element={<Baccarat />} />
           <Route path="/ThreeCardPoker" element={<ThreeCardPoker />} />
-          <Route path="/Home" element={<Home />} />
-          <Route path="/AboutMe" element={<AboutMe />} />
+          {/* <Route path="/Home" element={<Home />} /> */}
+          {/* <Route path="/AboutMe" element={<AboutMe />} /> */}
         </Routes>
       </div>
     </Router>
